@@ -6,15 +6,31 @@ import imblearn.under_sampling
 
 class FridgeFeatureExtractor():
     def __init__(self, csv_filename):
-        # Read dataset from csv
-        # 3 cols [Datetime, Aggregate, Fridge]
+        '''
+        Read dataset from csv 'csv_filename'
+        3 cols [Datetime, Aggregate, Fridge]
+        Convert Datetime field to datetime type
+        '''
         self.fridge_df = pd.read_csv(csv_filename)
         self.fridge_df['Datetime'] = pd.to_datetime(self.fridge_df['Datetime'])
 
     def train_test_split(self):
+        '''
+        Return train test split
+        :return: X_train, X_test, y_train, y_test
+        '''
         return self.X_train, self.X_test, self.y_train, self.y_test
 
     def build_model_0(self,threshold):
+        '''
+        Simple feature model creation
+        [Aggregate, Month, Day, Hour, Minute] for feature set, Fridge for target
+        Fridge values are binaries values [0,1] corresponding to values below and over the threshold respectively
+        :param threshold: watt X minute value that distinguish fridge activation from background noise
+        '''
+
+        assert threshold > 0
+
         self.threshold = threshold
         self.fridge_df.loc[self.fridge_df['Fridge'] < threshold, 'Fridge'] = 0
         self.fridge_df.loc[self.fridge_df['Fridge'] >= threshold, 'Fridge'] = 1
@@ -35,6 +51,12 @@ class FridgeFeatureExtractor():
             random_state=42)
 
     def build_model_4(self,threshold):
+        '''
+        Creation of model with SMOTE oversampling
+        [Aggregate, Month, Day, Hour, Minute] for feature set, Fridge for target
+        Fridge values are binaries values [0,1] corresponding to values below and over the threshold respectively
+        :param threshold: watt X minute value that distinguish fridge activation from background noise
+        '''
         self.build_model_0(threshold)
 
         """
@@ -47,6 +69,10 @@ class FridgeFeatureExtractor():
 
 
     def __preprocess(self,threshold):
+        '''
+        Function shared between several model builder.
+        It select record related only to days in which there have been at least an activation
+        '''
         self.threshold = threshold
         self.fridge_df.loc[self.fridge_df['Fridge'] < threshold, 'Fridge'] = 0
         self.fridge_df.loc[self.fridge_df['Fridge'] >= threshold, 'Fridge'] = 1
@@ -66,6 +92,12 @@ class FridgeFeatureExtractor():
 
 
     def build_model_1(self,threshold):
+        '''
+        Model creation , records are from days with at least one activation
+        [Aggregate, Month, Day, Hour, Minute] for feature set, Fridge for target
+        Fridge values are binaries values [0,1] corresponding to values below and over the threshold respectively
+        :param threshold: watt X minute value that distinguish fridge activation from background noise
+         '''
         # Create features = ['Aggregate','Month','Day','Hour','Minute']
         # Create target = ['Fridge'], binary with class 0 items < threshold, class 0 items >= threshold
         self.__preprocess(threshold)
@@ -81,6 +113,14 @@ class FridgeFeatureExtractor():
             random_state=42)
 
     def build_model_2(self, threshold):
+        '''
+                Model creation , records are from days with at least one activation and with days without
+                activation in equal part.
+                [Aggregate, Month, Day, Hour, Minute] for feature set, Fridge for target
+                Fridge values are binaries values [0,1] corresponding to values below and over the threshold respectively
+                :param threshold: watt X minute value that distinguish fridge activation from background noise
+        '''
+
         # Create features = ['Aggregate','Month','Day','Hour','Minute']
         # Create target = ['Fridge'], binary with class 0 items < threshold, class 0 items >= threshold
         self.__preprocess(threshold)
@@ -108,6 +148,14 @@ class FridgeFeatureExtractor():
 
 
     def build_model_3(self, threshold,ratio):
+        '''
+        Model creation , records are from days with at least one activation and with days without
+        activation. The ratio express how many records to choose from the days without activation
+        eith respect to the days with activation(e.g.: ratio = 3 means set of days without activation is 3 times larger)
+        [Aggregate, Month, Day, Hour, Minute] for feature set, Fridge for target
+        Fridge values are binaries values [0,1] corresponding to values below and over the threshold respectively
+        :param threshold: watt X minute value that distinguish fridge activation from background noise
+        '''
         # Create features = ['Aggregate','Month','Day','Hour','Minute']
         # Create target = ['Fridge'], binary with class 0 items < threshold, class 0 items >= threshold
 
