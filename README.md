@@ -24,7 +24,7 @@ This repository contains the following:
 - edautils: functions used in the eda to create the plots.
 - data_59_all.csv.tar.gz : the data used for this analysis.
 - FridgeFeatureExtractor.py : the class responsible for feature extraction, it implements 5 different transformation of the dataset.
-- FridgeStateClassifier.py : the class responsible of running several models, classifiers an tests
+- FridgeStateClassifier.py : the class responsible of running several models, classifiers and tests
 - main.py : example of classifier usage.
 
 The feature extractor implements five ways to transform the original dataset to tackle the class imbalance (9% positive, 91% negative) of the dataset.   
@@ -39,5 +39,16 @@ Value | 0.96 | 0.78 | 0.7 | 0.74 |
 
 The area under the ROC curve is 0.98.
 
+The feature importance is the following :
+
+Aggregate| Month | Day| Hour | Minute |
+--- | --- | --- | --- |--- |
+0.19| 0.30 | 0.20 | 0.21 | 0.07 |
+
 The analysis of the models 1, 3 are not presented, as the dataset were filtered with a bias towards the days with activation and, as such, the metric scored higher, but the problem deviated from the original statement.
 
+Fridge State Classifier implements also KNN, which gave good result when models 1-3 where used, but not in the general case.
+
+Search for optimal hyper - parameters have beeen implemented both for Random Forest and KNN through grid search optimization.
+
+In the current implementation the search for optimal hyper-parameters have been disabled and the optimal hyper-parameters are directely given as input to the classifier.
