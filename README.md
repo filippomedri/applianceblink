@@ -39,5 +39,5 @@ Value | 0.96 | 0.78 | 0.7 | 0.74 |
 
 The area under the ROC curve is 0.98.
 
-The analysis of the models 1, 3 are not presented, as the dataset were filtered with a bias towards the days with activatio and , as such, the metric scored higher, but the problem deviated from the original statement.
+The analysis of the models 1, 3 are not presented, as the dataset were filtered with a bias towards the days with activation and, as such, the metric scored higher, but the problem deviated from the original statement.
 
